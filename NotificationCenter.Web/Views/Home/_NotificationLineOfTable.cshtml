@@ -1,0 +1,30 @@
+﻿@model NotificationCenter.Interfaces.Models.Notification
+
+<tr>
+    <td>@Model.CreatedOn</td>
+    <td>@Model.Text</td>
+    <td>@Model.Status</td>
+    <td>
+        @if (Model.Status == NotificationCenter.Interfaces.Enums.NotificationStatus.NotSeen)
+        {
+            using (Ajax.BeginForm("MarkAsSeen", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "onAjaxRequestSuccess" }, new { @id = "AjaxformId", @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" value="@Model.Id" name="notificationId" />
+                <button type="submit" value="Process">
+                    <span>Seen</span>
+                </button>
+            }
+        }
+    </td>
+    <td>
+        @using (Ajax.BeginForm("Delete", "Home", new AjaxOptions { HttpMethod = "POST", OnSuccess = "onAjaxRequestSuccess" }, new { @id = "AjaxformId", @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" value="@Model.Id" name="notificationId" />
+            <button type="submit" value="Delete">
+                <span>Delete</span>
+            </button>
+        }
+    </td>
+</tr>

@@ -1,0 +1,39 @@
+﻿@model NotificationCenter.Web.Models.HomeModel
+@{
+    ViewBag.Title = "Notification Center";
+    var newNotifications = Model.Notifications.Count(n => n.Status == NotificationCenter.Interfaces.Enums.NotificationStatus.NotSeen);
+}
+
+<div class="jumbotron">
+    <h1>@ViewBag.Title</h1>
+    <p class="lead">Wellcome @Model.User</p>
+    <p>
+        You have @newNotifications new notification(s).
+    </p>
+</div>
+
+<div class="row">
+    <table style="width:100%" id="notifications">
+        @foreach (var n in Model.Notifications)
+        {
+            @{Html.RenderPartial("_NotificationLineOfTable", n);}
+        }
+    </table>
+</div>
+
+@Scripts.Render("~/bundles/signalr")
+@section scripts {
+
+    <script>
+        $(function () {
+
+            var notificationsChannel = $.connection.notificationsChannel;
+
+            notificationsChannel.client.newNotification = function (n) {
+                $('#notifications').append(n);
+            };
+
+            $.connection.hub.start();
+        });
+    </script>
+}
